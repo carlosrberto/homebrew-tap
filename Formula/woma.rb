@@ -2,15 +2,42 @@
 class Woma < Formula
   desc "Find, inspect and clean up git worktrees"
   homepage "https://github.com/carlosrberto/woma"
-  url "https://github.com/carlosrberto/woma/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "61e0ccbadbc9c4e47d2c723f77783cee070f65e3126e2f89e7d11f75b9b0477d"
+  version "0.1.1"
   license "MIT"
-  head "https://github.com/carlosrberto/woma.git", branch: "main"
 
-  depends_on "go" => :build
+  on_macos do
+    on_arm do
+      url "https://github.com/carlosrberto/woma/releases/download/v0.1.1/woma_0.1.1_darwin_arm64.tar.gz"
+      sha256 "7ceb93c87c27ea37bde4ee5170d02892f2125f6b2af9b09524bfff10a2807197"
+    end
+    on_intel do
+      url "https://github.com/carlosrberto/woma/releases/download/v0.1.1/woma_0.1.1_darwin_amd64.tar.gz"
+      sha256 "2b8889e87a31b9f55e6b00b4dba0513d6ece09f6ca89128ca3eaf35f1fda6cad"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/carlosrberto/woma/releases/download/v0.1.1/woma_0.1.1_linux_arm64.tar.gz"
+      sha256 "2f4e9b2a1a3f49d1391adf0bea88d927b9db7bcef30b612c59cc8f8ca7c026f6"
+    end
+    on_intel do
+      url "https://github.com/carlosrberto/woma/releases/download/v0.1.1/woma_0.1.1_linux_amd64.tar.gz"
+      sha256 "292091a6b64aefbb337efa4d52ad5f4d33969cce2a956a5c641cdee7ca4cfaec"
+    end
+  end
+
+  head do
+    url "https://github.com/carlosrberto/woma.git", branch: "main"
+    depends_on "go" => :build
+  end
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=#{version}")
+    if build.head?
+      system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=#{version}")
+    else
+      bin.install "woma"
+    end
   end
 
   def caveats
